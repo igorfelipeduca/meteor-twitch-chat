@@ -31,7 +31,7 @@ export const Message = ({ message }) => {
   return (
     <div className="flex items-center justify-between">
       <div className={"flex gap-x-8 text-zinc-300 rounded-lg"}>
-        <h3 className="font-semibold" style={{ color: user.hex }}>
+        <h3 className="font-semibold" style={{ color: user?.hex ?? "#fc0324" }}>
           {user?.nickname}
         </h3>
 
