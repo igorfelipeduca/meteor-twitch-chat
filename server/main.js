@@ -1,33 +1,27 @@
 import { Meteor } from "meteor/meteor";
 import { UsersCollection } from "/imports/api/users";
 import { MessagesCollection } from "/imports/api/message";
+import { insertUser } from "../imports/utils/insertUser";
+import { insertMessage } from "../imports/utils/insertMessage";
 
-async function insertUser({ name, nickname, email }) {
-  await UsersCollection.insertAsync({
-    name,
-    nickname,
-    email,
-    createdAt: new Date(),
-  });
-}
-
-async function insertMessage({ userId, text }) {
-  await MessagesCollection.insertAsync({
-    userId,
-    text,
-    createdAt: new Date(),
-  });
-}
+const mockUsers = [
+  {
+    name: "igor",
+    email: "yelldutz@gmail.com",
+    nickname: "ducaswtf",
+  },
+  {
+    name: "victor",
+    email: "qualquercoisa@gmail.com",
+    nickname: "sabaab_",
+  },
+];
 
 Meteor.startup(async () => {
   if ((await UsersCollection.find().countAsync()) === 0) {
-    const createdUser = await insertUser({
-      name: "igor",
-      email: "admin@gmail.com",
-      nickname: "admin",
-    });
+    for (const user of mockUsers) {
+      const createdUser = await insertUser(user);
 
-    if ((await MessagesCollection.find().countAsync()) === 0) {
       await insertMessage({
         userId: createdUser._id,
         text: "Hello world!",

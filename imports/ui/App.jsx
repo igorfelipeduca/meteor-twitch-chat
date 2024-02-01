@@ -4,6 +4,8 @@ import { useTracker } from "meteor/react-meteor-data";
 import { UsersCollection } from "../api/users";
 import { MessagesCollection } from "../api/message.js";
 import { Message } from "./Message.jsx";
+import { MessageInput } from "./MessageInput.jsx";
+// import { Toaster } from "sonner";
 
 export const App = () => {
   const [message, setMessage] = React.useState("");
@@ -32,10 +34,10 @@ export const App = () => {
     return <p>Loading...</p>;
   }
 
-  const sendButton = () => {
+  const handleMessageSend = () => {
     const messagePayload = {
       text: message,
-      userId: "noDbdboErHm8KeGHj",
+      userId: users[0]._id,
     };
 
     MessagesCollection.insert(messagePayload);
@@ -43,36 +45,41 @@ export const App = () => {
   };
 
   return (
-    <div className={"bg-black w-screen h-screen flex justify-center p-32"}>
-      <div className={""}>
-        <Users users={users} isLoading={isLoading} />
+    <>
+      <div className={"bg-black w-screen h-screen flex p-32"}>
+        <img
+          src="https://images.unsplash.com/photo-1682687981922-7b55dbb30892?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          className="h-full w-full"
+        />
 
-        <div className={"space-y-4"}>
-          {messages.map((message) => (
-            <Message message={message} />
-          ))}
-        </div>
+        <div className={"ml-16 h-[37rem]"}>
+          <div className={"flex flex-col align-bottom justify-end h-full"}>
+            {isLoading ? (
+              <h3>Loading chat...</h3>
+            ) : (
+              <div>
+                {messages.length ? (
+                  <div className="space-y-4">
+                    {messages.map((message) => (
+                      <Message message={message} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex items-center h-full justify-center">
+                    <p className="text-zinc-500">No messages yet</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
-        <div className={"flex items-center gap-x-2 mt-16"}>
-          <input
-            className={
-              "bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-400 outline-none py-2 px-4 "
-            }
-            placeholder={"Type a message..."}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+          <MessageInput
+            message={message}
+            setMessage={setMessage}
+            handleMessageSend={handleMessageSend}
           />
-
-          <button
-            className={
-              "bg-indigo-500 transition-all ease-linear hover:bg-indigo-700 text-white rounded-lg border-zinc-200 py-2 px-8"
-            }
-            onClick={sendButton}
-          >
-            Send
-          </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
